@@ -1,8 +1,10 @@
 
 import * as dotenv from "dotenv";
-import express from "express";
+import express, { Request, Response, NextFunction } from 'express'
 import cors from "cors";
 import helmet from "helmet";
+
+import 'reflect-metadata'
  
 dotenv.config();
 
@@ -13,6 +15,20 @@ if (!process.env.PORT) {
 const PORT: number = parseInt(process.env.PORT as string, 10);
  
 const app = express();
+
+app.use((req:Request, res:Response, next:NextFunction) => {
+  const err = new Error('Not Found') as Err
+  err.status = 404
+  next(err)
+})
+
+app.use((err: Err, req:Request, res:Response, next:NextFunction) => {
+  res.status(err.status || 500)
+  res.json({
+    message: err.message,
+    data: err.data
+  })
+})
 
 app.use(helmet());
 app.use(cors());

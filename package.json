@@ -30,6 +30,7 @@
     "express": "^4.17.1",
     "helmet": "^4.6.0",
     "jsonwebtoken": "^8.5.1",
+    "reflect-metadata": "^0.1.13",
     "sequelize": "^6.6.2",
     "ts-node": "^9.1.1"
   },
