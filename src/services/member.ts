@@ -122,8 +122,9 @@ export default class MemberService {
         }
     }
 
-    async updateNickName (memberId: number, nickName: string) {
+    async updateNickName (token: string, nickName: string) {
         try {
+            const memberId = await this.getMemberId(token)
             const member = await MemberModel.update({
                 nickName: nickName,
             }, {
@@ -139,7 +140,8 @@ export default class MemberService {
         }
     }
 
-    async updatePassword (memberId: number, password: string) {
+    async updatePassword (token: string, password: string) {
+        const memberId = await this.getMemberId(token)
         try {
             const salt = bcrypt.genSaltSync(10)
             const hash = bcrypt.hashSync(password, salt)
