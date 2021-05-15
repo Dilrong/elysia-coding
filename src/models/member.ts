@@ -1,8 +1,9 @@
-import { Table, Column, Model, DataType, AllowNull, Unique, Default } from 'sequelize-typescript';
+import { Table, Column, Model, DataType, AllowNull, Unique } from 'sequelize-typescript';
 
 @Table({ tableName: 'member' })
-export default class MemberModel extends Model<MemberModel> {
+export default class MemberModel extends Model {
     @AllowNull(false)
+    @Unique(true)
     @Column(DataType.STRING)
     email!: string;
 
