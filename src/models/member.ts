@@ -21,4 +21,7 @@ export default class MemberModel extends Model {
 
     @Column(DataType.STRING)
     salt!: string;
+
+    @Column(DataType.ENUM('admin', 'member', 'semi'))
+    role!: string;
 }

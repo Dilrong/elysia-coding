@@ -74,6 +74,7 @@ export default class MemberService {
             email: memberDTO.email,
             password: hash,
             nickName: memberDTO.nickName,
+            role: 'semi',
         })
 
         const currentMember = await MemberModel.findOne({
