@@ -15,10 +15,34 @@ interface Member {
 
 @Service()
 export default class MemberService {
-
     async signIn (email: string, password: string) {
         try {
-            
+            const memberVO = await MemberModel.findOne({
+                attributes: ['id', 'password'],
+                where: {
+                  email: email
+                }
+              })
+              let data = null
+              const result = bcrypt.compareSync(password, memberVO!.password)
+              if (result === true) {
+                const refreshToken = jwt.sign({ }, process.env.JWT_KEY!, { expiresIn: '7d' })
+                const member = await MemberModel.findOne({
+                  attributes: ['id'],
+                  where: { id: memberVO!.id }
+                })
+                await MemberModel.update({
+                  refreshToken: refreshToken
+                }, { where: { id: member!.id } })
+                const accessToken = jwt.sign({ member }, process.env.JWT_KEY!, { expiresIn: '30m' })
+                data = {
+                  accessToken: `Bearer ${accessToken}`,
+                  refreshToken: refreshToken
+                }
+              } else {
+                return { code: 403, message: 'error', data: 'not Authorized' }
+              }
+              return { code: 200, message: 'success', data: data }
         } catch (err) {
             return { code: 400, message: 'error', data: err }
         }

@@ -18,4 +18,7 @@ export default class MemberModel extends Model {
 
     @Column(DataType.STRING)
     refreshToken!: string;
+
+    @Column(DataType.STRING)
+    salt!: string;
 }
