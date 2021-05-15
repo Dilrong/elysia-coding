@@ -107,6 +107,35 @@ export default class MemberService {
           console.log(err)
           return { code: 400, message: 'error', data: err }
         }
+    }
+
+    async signOut (token: string) {
+        try {
+          const memberId = await this.getMemberId(token)
+          const member = await MemberModel.update({
+            refreshToken: null
+          }, { where: { id: memberId } })
+    
+          return { code: 200, message: 'success', data: member }
+        } catch (err) {
+          return { code: 400, message: 'error', data: err }
+        }
       }
 
+    async getMemberId (token: string) {
+        try {
+          token = token.slice(7, token.length).trimLeft()
+          const decoded: any = jwt.verify(token, String(process.env.JWT_KEY))
+          const member = await MemberModel.findOne({
+            attributes: ['id', 'email', 'nickName'],
+            where: {
+              id: decoded!.member.id
+            }
+          })
+          return member!.id
+        } catch (err) {
+          console.log(err)
+          return false
+        }
+    }
 }
