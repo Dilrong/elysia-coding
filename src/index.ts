@@ -1,8 +1,9 @@
 
-import * as dotenv from "dotenv";
 import express, { Request, Response, NextFunction } from 'express'
+import {} from './types/global'
 import cors from "cors";
-import helmet from "helmet";
+import helmet from "helmet"
+import * as dotenv from "dotenv"
 
 import indexRouter from './routes/index'
 import v1Router from './routes/v1'
