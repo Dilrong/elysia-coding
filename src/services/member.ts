@@ -89,4 +89,24 @@ export default class MemberService {
         return { code: 200, message: 'success', data: currentMember }
     }
 
+    async refreshToken (accessToken: string, refreshToken: string) {
+        try {
+          accessToken = accessToken.slice(7, accessToken.length).trimLeft()
+          jwt.verify(refreshToken, String(process.env.JWT_KEY))
+          const decoded: any = jwt.verify(accessToken, String(process.env.JWT_KEY), { ignoreExpiration: true })
+          const member = await MemberModel.findOne({
+            attributes: ['id'],
+            where: {
+              id: decoded!.member!.id
+            }
+          })
+          accessToken = jwt.sign({ member }, String(process.env.JWT_KEY), { expiresIn: '30m' })
+    
+          return { code: 200, message: 'success', data: `Bearer ${accessToken}` }
+        } catch (err) {
+          console.log(err)
+          return { code: 400, message: 'error', data: err }
+        }
+      }
+
 }
