@@ -184,14 +184,11 @@ export default class MemberService {
       }
     }
 
-    async confirmEmail (token: string) {
-      const memberId = await this.getMemberId(token)
+    async confirmEmail (email: string, key: string) {
       try {
-        const member = await MemberModel.findOne({
-          where: {
-            id: memberId
-          }
-        })
+        const member = await MemberModel.update({
+          role: 'member'
+        }, { where: { email: email, verifyKey: key } })
 
         return { code: 200, message: 'success', data: member }
       } catch (err) {
