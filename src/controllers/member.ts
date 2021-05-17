@@ -5,6 +5,16 @@ import MiddlewareService from '../services/middleware'
 
 const router = express.Router()
 
+router.get('/members/email', async (req: Request, res: Response, next: NextFunction) => {
+  const email = req.query.email
+  const key = req.query.key
+  const memberServiceInstance = Container.get(MemberService)
+
+  const { code, message, data } = await memberServiceInstance.confirmEmail(email, key)
+
+  return res.status(code).json({ message, data })
+})
+
 router.post('/members/signin', async (req: Request, res: Response, next: NextFunction) => {
     const email = req.body.email
     const password = req.body.password
@@ -35,6 +45,15 @@ router.post('/members/signout', async (req: Request, res: Response, next: NextFu
   } else {
     return res.status(403).json({ message: 'error', data: 'not Authorized' })
   }
+})
+
+router.post('/members/email', async (req: Request, res: Response, next: NextFunction) => {
+  const email = req.body.email
+  const memberServiceInstance = Container.get(MemberService)
+
+  const { code, message, data } = await memberServiceInstance.sendConfirmEmail(email)
+
+  return res.status(code).json({ message, data })
 })
 
 router.post('/members/refresh', async (req: Request, res: Response, next: NextFunction) => {
