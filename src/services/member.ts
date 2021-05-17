@@ -120,7 +120,46 @@ export default class MemberService {
         } catch (err) {
           return { code: 400, message: 'error', data: err }
         }
-      }
+    }
+
+    async updateNickName (token: string, nickName: string) {
+        try {
+            const memberId = await this.getMemberId(token)
+            const member = await MemberModel.update({
+                nickName: nickName,
+            }, {
+                where: {
+                    id: memberId
+                },
+                returning: true
+            })
+
+            return { code: 200, message: 'success', data: member }
+        } catch (err) {
+            return { code: 400, message: 'error', data: err }
+        }
+    }
+
+    async updatePassword (token: string, password: string) {
+        const memberId = await this.getMemberId(token)
+        try {
+            const salt = bcrypt.genSaltSync(10)
+            const hash = bcrypt.hashSync(password, salt)
+
+            const member = await MemberModel.update({
+                password: hash,
+            }, {
+                where: {
+                    id: memberId
+                },
+                returning: true
+            })
+
+            return { code: 200, message: 'success', data: member }
+        } catch (err) {
+            return { code: 400, message: 'error', data: err }
+        }
+    }
 
     async getMemberId (token: string) {
         try {
