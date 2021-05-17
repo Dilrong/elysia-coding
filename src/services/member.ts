@@ -1,6 +1,5 @@
 import MemberModel from '../models/member'
 import { Service } from 'typedi'
-import Sequelize from 'sequelize'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
