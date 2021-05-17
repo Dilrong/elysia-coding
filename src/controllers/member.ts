@@ -37,6 +37,15 @@ router.post('/members/signout', async (req: Request, res: Response, next: NextFu
   }
 })
 
+router.post('/members/email', async (req: Request, res: Response, next: NextFunction) => {
+  const email = req.body.email
+  const memberServiceInstance = Container.get(MemberService)
+
+  const { code, message, data } = await memberServiceInstance.sendConfirmEmail(email)
+
+  return res.status(code).json({ message, data })
+})
+
 router.post('/members/refresh', async (req: Request, res: Response, next: NextFunction) => {
   const accessToken = req.headers.authorization
   const refreshToken = req.body.refreshToken

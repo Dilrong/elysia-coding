@@ -1,6 +1,7 @@
 import MemberModel from '../models/member'
 import { Service } from 'typedi'
 import jwt from 'jsonwebtoken'
+import crypto from 'crypto'
 import bcrypt from 'bcrypt'
 import dotenv from 'dotenv'
 
@@ -158,6 +159,44 @@ export default class MemberService {
         } catch (err) {
             return { code: 400, message: 'error', data: err }
         }
+    }
+
+    async sendConfirmEmail (email: string) {
+      try {
+        const member = await MemberModel.findOne({
+          attributes: ['email'],
+          where: {
+            email: email
+          }
+        })
+
+        const key = crypto.randomBytes(256).toString('hex').substr(100, 10);
+
+        await MemberModel.update({
+          verifyKey: key
+        }, { where: { email: email } })
+
+        console.log(key)
+
+        return { code: 200, message: 'success', data: member }
+      } catch (err) {
+        return { code: 400, message: 'error', data: err }
+      }
+    }
+
+    async confirmEmail (token: string) {
+      const memberId = await this.getMemberId(token)
+      try {
+        const member = await MemberModel.findOne({
+          where: {
+            id: memberId
+          }
+        })
+
+        return { code: 200, message: 'success', data: member }
+      } catch (err) {
+        return { code: 400, message: 'error', data: err }
+      }
     }
 
     async getMemberId (token: string) {
