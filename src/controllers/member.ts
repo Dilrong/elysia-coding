@@ -10,7 +10,7 @@ router.get('/members/email', async (req: Request, res: Response, next: NextFunct
   const key = req.query.key
   const memberServiceInstance = Container.get(MemberService)
 
-  const { code, message, data } = await memberServiceInstance.confirmEmail(email, key)
+  const { code, message, data } = await memberServiceInstance.confirmEmail(String(email), String(key))
 
   return res.status(code).json({ message, data })
 })
@@ -21,9 +21,12 @@ router.post('/members/signin', async (req: Request, res: Response, next: NextFun
   
     const memberServiceInstance = Container.get(MemberService)
   
-    const { code, message, data } = await memberServiceInstance.signIn(email, password)
-  
-    return res.status(code).json({ message, data })
+    const { code, message, accessToken, refreshToken } = await memberServiceInstance.signIn(email, password)
+
+
+    res.cookie('AccessToken', accessToken, { httpOnly: true, secure: true })
+    res.cookie('RefreshToken', refreshToken, { httpOnly: true, secure: true })
+    return res.status(code).json({ message })
   })
 
 router.post('/members/signup', async (req: Request, res: Response, next: NextFunction) => {
@@ -36,7 +39,7 @@ router.post('/members/signup', async (req: Request, res: Response, next: NextFun
 })
 
 router.post('/members/signout', async (req: Request, res: Response, next: NextFunction) => {
-  const accessToken = req.headers.authorization
+  const accessToken = req.cookies['accessToken']
   const memberServiceInstance = Container.get(MemberService)
 
   if (await MiddlewareService.auth(String(accessToken))) {
@@ -57,8 +60,8 @@ router.post('/members/email', async (req: Request, res: Response, next: NextFunc
 })
 
 router.post('/members/refresh', async (req: Request, res: Response, next: NextFunction) => {
-  const accessToken = req.headers.authorization
-  const refreshToken = req.body.refreshToken
+  const accessToken = req.cookies['accessToken']
+  const refreshToken = req.cookies['refreshToken']
   const memberServiceInstance = Container.get(MemberService)
 
   if (await MiddlewareService.auth(String(accessToken))) {
@@ -70,7 +73,7 @@ router.post('/members/refresh', async (req: Request, res: Response, next: NextFu
 })
 
 router.post('/members/nickName', async (req: Request, res: Response, next: NextFunction) => {
-  const accessToken = req.headers.authorization
+  const accessToken = req.cookies['accessToken']
   const nickName = req.body.nickName
   const memberServiceInstance = Container.get(MemberService)
 
@@ -83,7 +86,7 @@ router.post('/members/nickName', async (req: Request, res: Response, next: NextF
 })
 
 router.post('/members/password', async (req: Request, res: Response, next: NextFunction) => {
-  const accessToken = req.headers.authorization
+  const accessToken = req.cookies['accessToken']
   const password = req.body.password
   const memberServiceInstance = Container.get(MemberService)
 
