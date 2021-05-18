@@ -23,7 +23,6 @@ export default class MemberService {
                   email: email
                 }
               })
-              let data = null
               const result = bcrypt.compareSync(password, memberVO!.password)
               if (result === true) {
                 const refreshToken = jwt.sign({ }, process.env.JWT_KEY!, { expiresIn: '7d' })
@@ -35,14 +34,11 @@ export default class MemberService {
                   refreshToken: refreshToken
                 }, { where: { id: member!.id } })
                 const accessToken = jwt.sign({ member }, process.env.JWT_KEY!, { expiresIn: '30m' })
-                data = {
-                  accessToken: `Bearer ${accessToken}`,
-                  refreshToken: refreshToken
-                }
+
+                return { code: 200, message: 'success', accessToken: accessToken, refreshToken: refreshToken }
               } else {
                 return { code: 403, message: 'error', data: 'not Authorized' }
               }
-              return { code: 200, message: 'success', data: data }
         } catch (err) {
             return { code: 400, message: 'error', data: err }
         }
