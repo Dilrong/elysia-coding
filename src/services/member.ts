@@ -75,7 +75,7 @@ export default class MemberService {
 
         const currentMember = await MemberModel.findOne({
             attributes: {
-                exclude: ['password', 'refreshToken']
+              include: ['id', 'email', 'nickName', 'role']
             },
             where: {
                 email: memberDTO.email
