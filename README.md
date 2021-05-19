@@ -64,6 +64,16 @@ index.ts: 시작 파일
 
 ### Prevent CSRF or XSS
 
+- **XSS**: Cross Site Scripting, 권한이 없는 사용자가 웹 사이트 스크립트를 삽입하는 공격 기법
+- **CSRF**: Cross Site Request Forgery, 사용자가 자신의 의지와는 무관하게 공격자가 의도한 행위를 특정 웹사이트에 요청하게 만드는 공격
+
+**JWT의 XSS, CSRF 방지대책**
+쿠키를 사용하여 방지
+
+- [XSS] httpOnly 속성을 사용하여 쿠키를 탈취하는 스크립트를 막을 수 있다.
+- [XSS] secure 속성을 사용하여 https일 때만 전송하게 한다.
+- [CSRF] CORS 도메인 설정
+
 ## DataBase
 
 ### Member
