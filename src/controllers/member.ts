@@ -23,9 +23,8 @@ router.post('/members/signin', async (req: Request, res: Response, next: NextFun
   
     const { code, message, accessToken, refreshToken } = await memberServiceInstance.signIn(email, password)
 
-
-    res.cookie('AccessToken', accessToken, { httpOnly: true, secure: true })
-    res.cookie('RefreshToken', refreshToken, { httpOnly: true, secure: true })
+    res.cookie('AccessToken', accessToken, { httpOnly: true })
+    res.cookie('RefreshToken', refreshToken, { httpOnly: true})
     return res.status(code).json({ message })
   })
 
