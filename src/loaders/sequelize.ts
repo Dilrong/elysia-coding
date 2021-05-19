@@ -12,7 +12,6 @@ if (env.env === 'production') {
     host: env.productDB.host,
     port: Number(env.productDB.port),
     dialect: 'sqlite',
-    timezone: '+09:00',
     models: [path.join(__dirname, '../models')]
   })
 } else if (env.env === 'develop') {
@@ -24,19 +23,13 @@ if (env.env === 'production') {
     host: env.developmentDB.host,
     port: Number(env.developmentDB.port),
     dialect: 'sqlite',
-    timezone: '+09:00',
     models: [path.join(__dirname, '../models')]
   })
 } else {
     console.log('Connected to Local DB')
     sequelize = new Sequelize({
-      username: env.localDB.user,
-      password: env.localDB.password,
-      database: env.localDB.name,
-      host: env.localDB.host,
-      port: Number(env.localDB.port),
+      storage: env.localDB.storage,
       dialect: 'sqlite',
-      timezone: '+09:00',
       models: [path.join(__dirname, '../models')]
     })
 }
